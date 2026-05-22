@@ -187,7 +187,7 @@ export default function App() {
           )}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-black focus:outline-none"
+            className="md:hidden text-gray-600 focus:outline-none"
           >
             <span className="text-sm font-semibold tracking-wider">
               {isMenuOpen ? "Close" : "Menu"}
@@ -195,6 +195,31 @@ export default function App() {
           </button>
         </div>
       </nav>
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 space-y-3 shadow-sm">
+          <button
+            onClick={() => {
+              setIsCheckingOut(false);
+              setIsMenuOpen(false);
+            }}
+            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
+          >
+            Shop
+          </button>
+          <a
+            href="#"
+            className="block font-medium text-gray-600 hover:text-black py-2"
+          >
+            Categories
+          </a>
+          <a
+            href="#"
+            className="block font-medium text-gray-600 hover:text-black py-2"
+          >
+            Contact
+          </a>
+        </div>
+      )}
 
       {/* Main Content Conditional Switch: Shows Checkout Form OR Standard Storefront */}
       {isCheckingOut ? (
