@@ -195,29 +195,36 @@ export default function App() {
           </button>
         </div>
       </nav>
+      {/* Mobile Menu Dropdown Links */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 space-y-3 shadow-sm">
           <button
             onClick={() => {
-              setIsCheckingOut(false);
-              setIsMenuOpen(false);
+              setIsCheckingOut(false); // Goes back to main shop view
+              setIsMenuOpen(false); // Closes the menu
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             Shop
           </button>
-          <a
-            href="#"
-            className="block font-medium text-gray-600 hover:text-black py-2"
+          <button
+            onClick={() => {
+              setIsMenuOpen(false); // Closes menu
+              // If you have a categories filter section, you can trigger it here
+            }}
+            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             Categories
-          </a>
-          <a
-            href="#"
-            className="block font-medium text-gray-600 hover:text-black py-2"
+          </button>
+          <button
+            onClick={() => {
+              setIsMenuOpen(false); // Closes menu
+              alert("Contact section coming soon!"); // Temporary alert or navigation
+            }}
+            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             Contact
-          </a>
+          </button>
         </div>
       )}
 
