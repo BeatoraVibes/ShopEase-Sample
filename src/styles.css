@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Resetting the default center alignment */
+body {
+  margin: 0;
+  padding: 0;
+}
