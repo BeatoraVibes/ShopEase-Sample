@@ -200,30 +200,30 @@ export default function App() {
         <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 space-y-3 shadow-sm">
           <button
             onClick={() => {
-              setIsCheckingOut(false); // Goes back to main shop view
+              setIsCheckingOut(false); // Goes back to main storefront view
               setIsMenuOpen(false); // Closes the menu
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
-            Shop
+            Store
           </button>
           <button
             onClick={() => {
-              setIsMenuOpen(false); // Closes menu
-              // If you have a categories filter section, you can trigger it here
+              setIsMenuOpen(false); // Closes the menu
+              // Add your About Us layout toggle here later if needed
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
-            Categories
+            About Us
           </button>
           <button
             onClick={() => {
-              setIsMenuOpen(false); // Closes menu
-              alert("Contact section coming soon!"); // Temporary alert or navigation
+              setIsMenuOpen(false); // Closes the menu
+              // Add your Contact Us behavior here later
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
-            Contact
+            Contact Us
           </button>
         </div>
       )}
