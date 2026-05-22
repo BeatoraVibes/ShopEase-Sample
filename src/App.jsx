@@ -197,29 +197,29 @@ export default function App() {
       </nav>
       {/* Mobile Menu Dropdown Links */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 space-y-3 shadow-sm">
+        <div className="md:hidden bg-white border-b border-gray-100 px-6 py-4 space-y-3 shadow-sm relative z-50">
           <button
             onClick={() => {
-              setIsCheckingOut(false); // Goes back to main storefront view
-              setIsMenuOpen(false); // Closes the menu
+              setIsCheckingOut(false);
+              setIsMenuOpen(false);
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             Store
           </button>
+
           <button
             onClick={() => {
-              setIsMenuOpen(false); // Closes the menu
-              // Add your About Us layout toggle here later if needed
+              setIsMenuOpen(false);
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             About Us
           </button>
+
           <button
             onClick={() => {
-              setIsMenuOpen(false); // Closes the menu
-              // Add your Contact Us behavior here later
+              setIsMenuOpen(false);
             }}
             className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
