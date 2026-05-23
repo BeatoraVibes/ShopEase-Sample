@@ -24,6 +24,8 @@ import {
   ShieldCheck,
   Truck,
   RefreshCw,
+  Smartphone,
+  Download,
 } from "lucide-react";
 
 // --- INITIAL CONSTANTS & PRODUCTS ---
@@ -147,6 +149,9 @@ export default function App() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
 
+  // --- NEW: MOBILE APPLICATION POPUP STATE ---
+  const [appModalOpen, setAppModalOpen] = useState(false);
+
   // Contact Form State
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -174,6 +179,14 @@ export default function App() {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
     }, 4500);
     return () => clearInterval(slideTimer);
+  }, []);
+
+  // --- TRIGGER MOBILE APP POPUP 2 SECONDS AFTER LOAD ---
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAppModalOpen(true);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   // --- BUSINESS LOGIC FUNCTIONS ---
@@ -211,7 +224,6 @@ export default function App() {
     );
   };
 
-  // --- COMPLETED WORKABLE DELETE FUNCTION ---
   const deleteFromCart = (id, productName) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
     triggerToast(`Removed ${productName} completely from Cart.`);
@@ -349,6 +361,15 @@ export default function App() {
 
             {/* User Interface Quick-Actions */}
             <div className="flex items-center gap-2 border-l border-slate-200 pl-3 md:pl-5">
+              {/* Trigger App Modal Manually */}
+              <button
+                onClick={() => setAppModalOpen(true)}
+                className="p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-purple-600 transition-all"
+                title="Download App"
+              >
+                <Smartphone className="w-4.5 h-4.5" />
+              </button>
+
               <button
                 onClick={() => setActiveTab("profile")}
                 className={`p-2 rounded-xl transition-all ${
@@ -694,7 +715,6 @@ export default function App() {
         {/* --- INTERACTIVE CONTACT US COMPONENT --- */}
         {activeTab === "contact" && (
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in">
-            {/* Informational Channel Segment */}
             <div className="md:col-span-2 bg-gradient-to-br from-purple-700 to-indigo-900 rounded-2xl p-6 text-white flex flex-col justify-between shadow-premium">
               <div className="space-y-4">
                 <h3 className="text-lg font-black tracking-tight">
@@ -726,7 +746,6 @@ export default function App() {
               </span>
             </div>
 
-            {/* Functional Input Segment Form */}
             <div className="md:col-span-3 bg-white border border-purple-50 rounded-2xl p-6 shadow-premium">
               <h3 className="text-base font-bold text-slate-900 mb-4">
                 Transmit Inquiries
@@ -752,7 +771,7 @@ export default function App() {
                     Electronic Mail Point
                   </label>
                   <input
-                    type="email"
+                    type="type"
                     required
                     value={contactForm.email}
                     onChange={(e) =>
@@ -795,7 +814,6 @@ export default function App() {
         {activeTab === "checkout" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fade-in">
             <div className="lg:col-span-2 space-y-6">
-              {/* Shipping Address Subsystem */}
               <div className="bg-white p-6 rounded-2xl border border-purple-50 shadow-premium">
                 <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-purple-600" /> Delivery Target
@@ -857,7 +875,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Payment Gateway Matrix Selector */}
               <div className="bg-white p-6 rounded-2xl border border-purple-50 shadow-premium">
                 <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-purple-600" /> Secured
@@ -912,7 +929,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Static Snapshot Invoice Sidebar Summary */}
             <div className="bg-white p-6 rounded-2xl border border-purple-50 shadow-premium h-fit">
               <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
                 Verification Summary
@@ -956,7 +972,6 @@ export default function App() {
                   </span>
                 </div>
               </div>
-
               <button
                 onClick={() => {
                   setCart([]);
@@ -1047,8 +1062,6 @@ export default function App() {
                 ETA: 2 Days
               </span>
             </div>
-
-            {/* Tracking Sequence Timeline */}
             <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-1.5 before:bottom-1.5 before:w-0.5 before:bg-purple-100">
               {[
                 {
@@ -1103,7 +1116,6 @@ export default function App() {
       {isCartOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/40 backdrop-blur-xs flex justify-end">
           <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between animate-slide-left">
-            {/* Drawer Header Area */}
             <div className="p-4 border-b border-purple-50 flex items-center justify-between bg-gradient-to-r from-white to-[#F3F0FA]/30">
               <span className="font-bold text-sm text-slate-900 flex items-center gap-2">
                 <ShoppingBag className="w-4.5 h-4.5 text-purple-600" /> Active
@@ -1117,7 +1129,6 @@ export default function App() {
               </button>
             </div>
 
-            {/* Cart Matrix Checklist Container */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {cart.length === 0 ? (
                 <div className="text-center py-16 space-y-2">
@@ -1146,8 +1157,6 @@ export default function App() {
                           ₹{item.price.toLocaleString("en-IN")}
                         </span>
                       </div>
-
-                      {/* Control Micro-nodes */}
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center bg-slate-50 rounded-lg overflow-hidden border border-slate-100">
                           <button
@@ -1166,12 +1175,9 @@ export default function App() {
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
-
-                        {/* --- WORKING FULL DELETION TARGET NODE --- */}
                         <button
                           onClick={() => deleteFromCart(item.id, item.name)}
                           className="text-slate-300 hover:text-red-500 transition-colors p-1"
-                          title="Remove item completely"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -1182,10 +1188,8 @@ export default function App() {
               )}
             </div>
 
-            {/* Settlement Calculations & Checkout Directives */}
             {cart.length > 0 && (
               <div className="p-4 border-t border-purple-50 bg-[#F3F0FA]/30 space-y-4">
-                {/* Coupon Input System */}
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -1201,8 +1205,6 @@ export default function App() {
                     Apply
                   </button>
                 </div>
-
-                {/* Subtotals & Discounts Block */}
                 <div className="space-y-1.5 border-b border-purple-50 pb-3 text-xs font-medium text-slate-500">
                   <div className="flex justify-between">
                     <span>Subtotal Matrix</span>
@@ -1221,7 +1223,6 @@ export default function App() {
                     </span>
                   </div>
                 </div>
-
                 <button
                   onClick={() => {
                     setIsCartOpen(false);
@@ -1277,6 +1278,58 @@ export default function App() {
                 Add Asset To Cart
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- BRAND NEW: MOBILE APPLICATION DOWNLOAD POPUP MODAL --- */}
+      {appModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 relative border border-purple-100 shadow-2xl text-center space-y-4">
+            {/* Close Cross Node */}
+            <button
+              onClick={() => setAppModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-xl hover:bg-slate-100 text-slate-400"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Premium Icon Header Layout */}
+            <div className="w-14 h-14 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center rounded-2xl mx-auto shadow-lg shadow-purple-100 animate-bounce">
+              <Smartphone className="w-7 h-7" />
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-base font-black text-slate-900 tracking-tight">
+                Get ShopEase Mobile App
+              </h3>
+              <p className="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md inline-block">
+                Android Edition (.APK)
+              </p>
+            </div>
+
+            <p className="text-xs text-slate-400 font-medium px-2">
+              Unlock fluid navigation pathways, lightning fast order tracking
+              metrics, and immediate app-only checkout updates.
+            </p>
+
+            {/* --- CORE DOWNLOAD LINK ACTION EDGE --- */}
+            <a
+              href="/base.apk"
+              download="ShopEase.apk"
+              onClick={() => {
+                setAppModalOpen(false);
+                triggerToast("Initializing .APK asset download pipeline...");
+              }}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs py-3 rounded-xl shadow-md flex items-center justify-center gap-2 transition-all group"
+            >
+              <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+              Download Android Package
+            </a>
+
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              Vercel Distributed Assets Core
+            </p>
           </div>
         </div>
       )}
