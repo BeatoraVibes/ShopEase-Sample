@@ -18,6 +18,12 @@ import {
   Sparkles,
   SlidersHorizontal,
   ArrowLeftRight,
+  Info,
+  Mail,
+  Phone,
+  ShieldCheck,
+  Truck,
+  RefreshCw,
 } from "lucide-react";
 
 // --- INITIAL CONSTANTS & PRODUCTS ---
@@ -121,7 +127,7 @@ const HERO_SLIDES = [
 
 export default function App() {
   // --- STATE ENVIRONMENT ---
-  const [activeTab, setActiveTab] = useState("home"); // home, checkout, profile, tracking
+  const [activeTab, setActiveTab] = useState("home"); // home, checkout, profile, tracking, about, contact
   const [cart, setCart] = useState(() => {
     const local = localStorage.getItem("shopease_cart");
     return local ? JSON.parse(local) : [];
@@ -140,6 +146,13 @@ export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
+
+  // Contact Form State
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
   // Fake Checkout Form State
   const [address, setAddress] = useState({
@@ -198,6 +211,12 @@ export default function App() {
     );
   };
 
+  // --- COMPLETED WORKABLE DELETE FUNCTION ---
+  const deleteFromCart = (id, productName) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+    triggerToast(`Removed ${productName} completely from Cart.`);
+  };
+
   const toggleWishlist = (id) => {
     setWishlist((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
@@ -216,6 +235,14 @@ export default function App() {
     }
   };
 
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    triggerToast(
+      "Thank you! Our support matrix will contact you within 24 hours."
+    );
+    setContactForm({ name: "", email: "", message: "" });
+  };
+
   // --- FILTER & SORT EXECUTION ---
   const filteredProducts = ALL_PRODUCTS.filter((p) => {
     const matchesSearch =
@@ -228,7 +255,7 @@ export default function App() {
   }).sort((a, b) => {
     if (sortBy === "lowHigh") return a.price - b.price;
     if (sortBy === "highLow") return b.price - a.price;
-    return b.rating - a.rating; // default: popularity metric
+    return b.rating - a.rating;
   });
 
   // Dynamic Totals Calculation
@@ -266,7 +293,7 @@ export default function App() {
           </div>
 
           {/* Interactive Live Search Filter Engine */}
-          <div className="flex-1 max-w-md relative hidden sm:block">
+          <div className="flex-1 max-w-xs md:max-w-md relative hidden sm:block">
             <input
               type="text"
               placeholder="Search running shoes, proteins, workout gear..."
@@ -278,10 +305,10 @@ export default function App() {
           </div>
 
           {/* Core Navigation Pathways */}
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 md:gap-5">
             <button
               onClick={() => setActiveTab("home")}
-              className={`text-sm font-semibold transition-colors ${
+              className={`text-xs md:text-sm font-bold transition-colors ${
                 activeTab === "home"
                   ? "text-purple-600"
                   : "text-slate-600 hover:text-purple-600"
@@ -290,18 +317,38 @@ export default function App() {
               Shop
             </button>
             <button
+              onClick={() => setActiveTab("about")}
+              className={`text-xs md:text-sm font-bold transition-colors ${
+                activeTab === "about"
+                  ? "text-purple-600"
+                  : "text-slate-600 hover:text-purple-600"
+              }`}
+            >
+              About Us
+            </button>
+            <button
+              onClick={() => setActiveTab("contact")}
+              className={`text-xs md:text-sm font-bold transition-colors ${
+                activeTab === "contact"
+                  ? "text-purple-600"
+                  : "text-slate-600 hover:text-purple-600"
+              }`}
+            >
+              Contact
+            </button>
+            <button
               onClick={() => setActiveTab("tracking")}
-              className={`text-sm font-semibold transition-colors ${
+              className={`text-xs md:text-sm font-bold transition-colors ${
                 activeTab === "tracking"
                   ? "text-purple-600"
                   : "text-slate-600 hover:text-purple-600"
               }`}
             >
-              Track Order
+              Track
             </button>
 
             {/* User Interface Quick-Actions */}
-            <div className="flex items-center gap-3 border-l border-slate-200 pl-4 sm:pl-6">
+            <div className="flex items-center gap-2 border-l border-slate-200 pl-3 md:pl-5">
               <button
                 onClick={() => setActiveTab("profile")}
                 className={`p-2 rounded-xl transition-all ${
@@ -310,14 +357,14 @@ export default function App() {
                     : "hover:bg-slate-100 text-slate-600"
                 }`}
               >
-                <User className="w-5 h-5" />
+                <User className="w-4.5 h-4.5" />
               </button>
 
               <button
                 onClick={() => setIsCartOpen(true)}
                 className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 relative transition-all"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4.5 h-4.5" />
                 {cart.length > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 bg-purple-600 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center animate-bounce">
                     {cart.reduce((total, item) => total + item.quantity, 0)}
@@ -345,6 +392,7 @@ export default function App() {
 
       {/* --- RENDER CONTENT SCHEDULER ENGINE --- */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 sm:pb-12">
+        {/* HOME COMPONENT */}
         {activeTab === "home" && (
           <>
             {/* HERO PROMOTIONAL CAROUSEL BANNER */}
@@ -585,6 +633,162 @@ export default function App() {
               </div>
             </div>
           </>
+        )}
+
+        {/* --- PREMIUM ABOUT US COMPONENT --- */}
+        {activeTab === "about" && (
+          <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-purple-50 p-6 md:p-10 shadow-premium space-y-8 animate-fade-in">
+            <div className="text-center space-y-2">
+              <div className="inline-flex p-3 rounded-2xl bg-purple-50 text-purple-600 mb-2">
+                <Info className="w-6 h-6" />
+              </div>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                Redefining Digital Commerce
+              </h2>
+              <p className="text-sm font-medium text-slate-400 max-w-xl mx-auto">
+                ShopEase combines a minimal, luxury interface with premium
+                lifestyle essentials to elevate your standard shopping
+                ecosystem.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+              <div className="p-5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20 space-y-2">
+                <ShieldCheck className="w-5 h-5 text-purple-600" />
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                  Elite Authenticity
+                </h4>
+                <p className="text-[11px] text-slate-400 font-medium">
+                  Every premium shoe, supplement container, and gym apparatus is
+                  sourced strictly through authorized global brand distribution.
+                </p>
+              </div>
+              <div className="p-5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20 space-y-2">
+                <Truck className="w-5 h-5 text-purple-600" />
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                  Express Logistics
+                </h4>
+                <p className="text-[11px] text-slate-400 font-medium">
+                  Optimized automated priority logistics lines ensuring
+                  hyper-fast processing across our regional hubs.
+                </p>
+              </div>
+              <div className="p-5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20 space-y-2">
+                <RefreshCw className="w-5 h-5 text-purple-600" />
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                  Fluid Exchange
+                </h4>
+                <p className="text-[11px] text-slate-400 font-medium">
+                  A frictionless, no-questions-asked protection layout
+                  guaranteeing complete post-purchase safety metrics.
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-purple-50 pt-6 text-center text-xs font-bold text-purple-600">
+              Inspired by Luxury Aesthetics. Fabricated for Ultimate Utility.
+            </div>
+          </div>
+        )}
+
+        {/* --- INTERACTIVE CONTACT US COMPONENT --- */}
+        {activeTab === "contact" && (
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in">
+            {/* Informational Channel Segment */}
+            <div className="md:col-span-2 bg-gradient-to-br from-purple-700 to-indigo-900 rounded-2xl p-6 text-white flex flex-col justify-between shadow-premium">
+              <div className="space-y-4">
+                <h3 className="text-lg font-black tracking-tight">
+                  Connect Channels
+                </h3>
+                <p className="text-xs text-purple-100 font-medium">
+                  Have inquiries regarding specialized bulk gym apparatus
+                  configurations or wholesale supplements allocation models?
+                </p>
+              </div>
+
+              <div className="space-y-4 my-6">
+                <div className="flex items-center gap-3 text-xs font-semibold">
+                  <Mail className="w-4.5 h-4.5 text-purple-300" />
+                  <span>support@shopease.io</span>
+                </div>
+                <div className="flex items-center gap-3 text-xs font-semibold">
+                  <Phone className="w-4.5 h-4.5 text-purple-300" />
+                  <span>+91 98230 45120</span>
+                </div>
+                <div className="flex items-center gap-3 text-xs font-semibold">
+                  <MapPin className="w-4.5 h-4.5 text-purple-300" />
+                  <span>HQ Fulfillment Hub, Virar East, Mumbai, MH</span>
+                </div>
+              </div>
+
+              <span className="text-[10px] text-purple-300 font-bold uppercase tracking-widest">
+                Support Core: 24/7/365
+              </span>
+            </div>
+
+            {/* Functional Input Segment Form */}
+            <div className="md:col-span-3 bg-white border border-purple-50 rounded-2xl p-6 shadow-premium">
+              <h3 className="text-base font-bold text-slate-900 mb-4">
+                Transmit Inquiries
+              </h3>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                    Full Legal Identifier
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={contactForm.name}
+                    onChange={(e) =>
+                      setContactForm({ ...contactForm, name: e.target.value })
+                    }
+                    className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
+                    placeholder="e.g. Daksh"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                    Electronic Mail Point
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={contactForm.email}
+                    onChange={(e) =>
+                      setContactForm({ ...contactForm, email: e.target.value })
+                    }
+                    className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
+                    placeholder="customer@domain.com"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                    Elaborate Communication Stream
+                  </label>
+                  <textarea
+                    rows="3"
+                    required
+                    value={contactForm.message}
+                    onChange={(e) =>
+                      setContactForm({
+                        ...contactForm,
+                        message: e.target.value,
+                      })
+                    }
+                    className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none resize-none"
+                    placeholder="State structural issues, sizing inquiries, or tracking anomalies..."
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md shadow-purple-50"
+                >
+                  Dispatch Ticket Pipeline
+                </button>
+              </form>
+            </div>
+          </div>
         )}
 
         {/* --- CHECKOUT WORKFLOW VIEW --- */}
@@ -962,11 +1166,12 @@ export default function App() {
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
+
+                        {/* --- WORKING FULL DELETION TARGET NODE --- */}
                         <button
-                          onClick={() =>
-                            updateQuantity(item.id, -item.quantity)
-                          }
+                          onClick={() => deleteFromCart(item.id, item.name)}
                           className="text-slate-300 hover:text-red-500 transition-colors p-1"
+                          title="Remove item completely"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
