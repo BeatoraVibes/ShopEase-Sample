@@ -142,16 +142,15 @@ export default function App() {
           <button
             onClick={() => {
               setIsCheckingOut(false);
-              setOrderConfirmed(false);
               setIsMenuOpen(false);
             }}
-            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2 border-b border-gray-50"
+            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             Store
           </button>
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2 border-b border-gray-50"
+            className="block w-full text-left font-medium text-gray-600 hover:text-black py-2"
           >
             About Us
           </button>
