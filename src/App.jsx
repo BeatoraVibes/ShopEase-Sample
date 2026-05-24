@@ -129,7 +129,7 @@ const HERO_SLIDES = [
 
 export default function App() {
   // --- STATE ENVIRONMENT ---
-  const [activeTab, setActiveTab] = useState("home"); // home, checkout, profile, tracking, about, contact
+  const [activeTab, setActiveTab] = useState("home"); // home, checkout, profile, tracking
   const [cart, setCart] = useState(() => {
     const local = localStorage.getItem("shopease_cart");
     return local ? JSON.parse(local) : [];
@@ -148,8 +148,6 @@ export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
-
-  // --- NEW: MOBILE APPLICATION POPUP STATE ---
   const [appModalOpen, setAppModalOpen] = useState(false);
 
   // Contact Form State
@@ -181,7 +179,7 @@ export default function App() {
     return () => clearInterval(slideTimer);
   }, []);
 
-  // --- TRIGGER MOBILE APP POPUP 2 SECONDS AFTER LOAD ---
+  // Trigger app download banner alert after 2 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setAppModalOpen(true);
@@ -270,7 +268,6 @@ export default function App() {
     return b.rating - a.rating;
   });
 
-  // Dynamic Totals Calculation
   const cartSubtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -282,122 +279,77 @@ export default function App() {
     <div className="min-h-screen bg-[#FAFAFE] text-slate-800 font-sans antialiased selection:bg-purple-200">
       {/* GLOBAL TOAST SYSTEM */}
       {toast && (
-        <div className="fixed top-20 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 animate-slide-in">
+        <div className="fixed top-20 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700">
           <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
           <p className="text-sm font-medium">{toast}</p>
         </div>
       )}
 
-      {/* --- DESKTOP & TABLET NAV BAR --- */}
-      <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-purple-100 shadow-sm transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      {/* --- CLEANED NAV BAR --- */}
+      <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-purple-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           {/* Logo Identity */}
           <div
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer shrink-0"
             onClick={() => setActiveTab("home")}
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-purple-200">
               SE
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-purple-700 to-indigo-800 bg-clip-text text-transparent">
+            <span className="text-lg font-black tracking-tight bg-gradient-to-r from-purple-700 to-indigo-800 bg-clip-text text-transparent">
               ShopEase
             </span>
           </div>
 
-          {/* Interactive Live Search Filter Engine */}
-          <div className="flex-1 max-w-xs md:max-w-md relative hidden sm:block">
+          {/* Search Engine (Desktop) */}
+          <div className="flex-1 max-w-md relative hidden sm:block">
             <input
               type="text"
               placeholder="Search running shoes, proteins, workout gear..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#F3F0FA]/60 pl-10 pr-4 py-2 rounded-xl text-sm border border-transparent focus:border-purple-300 focus:bg-white focus:ring-2 focus:ring-purple-100 outline-none transition-all"
+              className="w-full bg-[#F3F0FA]/60 pl-10 pr-4 py-2 rounded-xl text-sm border border-transparent focus:border-purple-300 focus:bg-white outline-none"
             />
             <Search className="absolute left-3 top-2.5 w-4.5 h-4.5 text-slate-400" />
           </div>
 
-          {/* Core Navigation Pathways */}
-          <div className="flex items-center gap-3 md:gap-5">
+          {/* Quick UI Navigation Nodes */}
+          <div className="flex items-center gap-3 shrink-0">
             <button
-              onClick={() => setActiveTab("home")}
-              className={`text-xs md:text-sm font-bold transition-colors ${
-                activeTab === "home"
-                  ? "text-purple-600"
-                  : "text-slate-600 hover:text-purple-600"
-              }`}
+              onClick={() => setAppModalOpen(true)}
+              className="p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-purple-600 transition-all"
+              title="Download App"
             >
-              Shop
-            </button>
-            <button
-              onClick={() => setActiveTab("about")}
-              className={`text-xs md:text-sm font-bold transition-colors ${
-                activeTab === "about"
-                  ? "text-purple-600"
-                  : "text-slate-600 hover:text-purple-600"
-              }`}
-            >
-              About Us
-            </button>
-            <button
-              onClick={() => setActiveTab("contact")}
-              className={`text-xs md:text-sm font-bold transition-colors ${
-                activeTab === "contact"
-                  ? "text-purple-600"
-                  : "text-slate-600 hover:text-purple-600"
-              }`}
-            >
-              Contact
-            </button>
-            <button
-              onClick={() => setActiveTab("tracking")}
-              className={`text-xs md:text-sm font-bold transition-colors ${
-                activeTab === "tracking"
-                  ? "text-purple-600"
-                  : "text-slate-600 hover:text-purple-600"
-              }`}
-            >
-              Track
+              <Smartphone className="w-5 h-5" />
             </button>
 
-            {/* User Interface Quick-Actions */}
-            <div className="flex items-center gap-2 border-l border-slate-200 pl-3 md:pl-5">
-              {/* Trigger App Modal Manually */}
-              <button
-                onClick={() => setAppModalOpen(true)}
-                className="p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-purple-600 transition-all"
-                title="Download App"
-              >
-                <Smartphone className="w-4.5 h-4.5" />
-              </button>
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`p-2 rounded-xl transition-all ${
+                activeTab === "profile"
+                  ? "bg-purple-100 text-purple-700"
+                  : "hover:bg-slate-100 text-slate-600"
+              }`}
+            >
+              <User className="w-5 h-5" />
+            </button>
 
-              <button
-                onClick={() => setActiveTab("profile")}
-                className={`p-2 rounded-xl transition-all ${
-                  activeTab === "profile"
-                    ? "bg-purple-100 text-purple-700"
-                    : "hover:bg-slate-100 text-slate-600"
-                }`}
-              >
-                <User className="w-4.5 h-4.5" />
-              </button>
-
-              <button
-                onClick={() => setIsCartOpen(true)}
-                className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 relative transition-all"
-              >
-                <ShoppingBag className="w-4.5 h-4.5" />
-                {cart.length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-purple-600 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center animate-bounce">
-                    {cart.reduce((total, item) => total + item.quantity, 0)}
-                  </span>
-                )}
-              </button>
-            </div>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 relative transition-all"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {cart.length > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-purple-600 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
+                  {cart.reduce((total, item) => total + item.quantity, 0)}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* MOBILE-ONLY SEARCH HEADER BAR */}
+      {/* MOBILE-ONLY SEARCH BAR */}
       <div className="p-4 sm:hidden bg-white border-b border-purple-50">
         <div className="relative">
           <input
@@ -405,46 +357,35 @@ export default function App() {
             placeholder="Search premium products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#F3F0FA]/70 pl-10 pr-4 py-2.5 rounded-xl text-sm border border-transparent focus:border-purple-300 outline-none transition-all"
+            className="w-full bg-[#F3F0FA]/70 pl-10 pr-4 py-2.5 rounded-xl text-sm border border-transparent focus:border-purple-300 outline-none"
           />
           <Search className="absolute left-3 top-3 w-4.5 h-4.5 text-slate-400" />
         </div>
       </div>
 
-      {/* --- RENDER CONTENT SCHEDULER ENGINE --- */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 sm:pb-12">
+      {/* --- RENDER ROUTER SYSTEM --- */}
+      <main className="max-w-7xl mx-auto px-4 py-6 pb-24 sm:pb-12">
         {/* HOME COMPONENT */}
         {activeTab === "home" && (
           <>
-            {/* HERO PROMOTIONAL CAROUSEL BANNER */}
-            <div className="relative h-44 sm:h-64 rounded-2xl overflow-hidden mb-8 shadow-premium transition-all duration-700">
+            {/* HERO PROMOTIONAL BANNER */}
+            <div className="relative h-44 sm:h-64 rounded-2xl overflow-hidden mb-8 shadow-premium">
               <div
-                className={`absolute inset-0 bg-gradient-to-r ${HERO_SLIDES[currentSlide].color} flex flex-col justify-center px-6 sm:px-12 text-white transition-all`}
+                className={`absolute inset-0 bg-gradient-to-r ${HERO_SLIDES[currentSlide].color} flex flex-col justify-center px-6 sm:px-12 text-white`}
               >
                 <span className="text-xs uppercase tracking-widest text-purple-300 font-bold mb-1">
                   Exclusive Collection
                 </span>
-                <h1 className="text-xl sm:text-3xl font-black max-w-md sm:max-w-xl transition-all leading-tight">
+                <h1 className="text-xl sm:text-3xl font-black max-w-md sm:max-w-xl leading-tight">
                   {HERO_SLIDES[currentSlide].title}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-200 mt-2 font-medium">
                   {HERO_SLIDES[currentSlide].sub}
                 </p>
               </div>
-              <div className="absolute bottom-3 right-4 flex gap-1.5">
-                {HERO_SLIDES.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      idx === currentSlide ? "bg-white w-5" : "bg-white/40"
-                    }`}
-                  />
-                ))}
-              </div>
             </div>
 
-            {/* DYNAMIC CATEGORY FILTER TRACK */}
+            {/* CATEGORY TRACK */}
             <div className="mb-8">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
                 <SlidersHorizontal className="w-3.5 h-3.5" /> Explore Premium
@@ -458,8 +399,8 @@ export default function App() {
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                         selectedCategory === cat
-                          ? "bg-purple-600 text-white shadow-md shadow-purple-100"
-                          : "bg-white text-slate-600 border border-purple-100 hover:border-purple-300"
+                          ? "bg-purple-600 text-white"
+                          : "bg-white text-slate-600 border border-purple-100"
                       }`}
                     >
                       {cat}
@@ -469,27 +410,14 @@ export default function App() {
               </div>
             </div>
 
-            {/* CONTROL PANEL GRID: PARAMETER FILTER SIDEBAR + PRODUCT GRID */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* FILTERING / SORTING PANEL */}
-              <div className="bg-white p-5 rounded-2xl border border-purple-50 shadow-premium h-fit space-y-6 lg:sticky lg:top-24">
+            {/* PRODUCT SECTION DISPLAY */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-16">
+              <div className="bg-white p-5 rounded-2xl border border-purple-50 shadow-premium h-fit space-y-6">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <span className="text-sm font-bold flex items-center gap-2">
                     <Filter className="w-4 h-4 text-purple-600" /> Filter Engine
                   </span>
-                  <button
-                    onClick={() => {
-                      setSelectedCategory("All");
-                      setMaxPrice(35000);
-                      setSortBy("popular");
-                    }}
-                    className="text-[11px] text-purple-600 font-bold hover:underline"
-                  >
-                    Reset All
-                  </button>
                 </div>
-
-                {/* Price Ceiling Ranger */}
                 <div>
                   <label className="text-xs font-bold text-slate-500 block mb-2">
                     Max Budget: ₹{maxPrice.toLocaleString("en-IN")}
@@ -503,13 +431,7 @@ export default function App() {
                     onChange={(e) => setMaxPrice(Number(e.target.value))}
                     className="w-full accent-purple-600 bg-purple-100 h-1 rounded-lg appearance-none cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-medium">
-                    <span>₹999</span>
-                    <span>₹35,000</span>
-                  </div>
                 </div>
-
-                {/* Metrics Sorting Architecture */}
                 <div>
                   <label className="text-xs font-bold text-slate-500 block mb-2">
                     Sort Criteria
@@ -517,7 +439,7 @@ export default function App() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full text-xs font-semibold bg-[#F3F0FA]/60 p-2.5 rounded-xl border border-transparent focus:border-purple-300 focus:bg-white outline-none"
+                    className="w-full text-xs font-semibold bg-[#F3F0FA]/60 p-2.5 rounded-xl outline-none"
                   >
                     <option value="popular">Top Rated & Popular</option>
                     <option value="lowHigh">Price: Low to High</option>
@@ -526,235 +448,147 @@ export default function App() {
                 </div>
               </div>
 
-              {/* CORE STORE PRODUCT GRID CONFIGURATION */}
               <div className="lg:col-span-3">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-semibold text-slate-500">
-                    Showing{" "}
-                    <span className="text-slate-800 font-bold">
-                      {filteredProducts.length}
-                    </span>{" "}
-                    luxury assets
-                  </p>
-                </div>
-
-                {filteredProducts.length === 0 ? (
-                  <div className="bg-white rounded-2xl border border-purple-50 p-12 text-center shadow-premium">
-                    <p className="text-slate-400 text-sm font-medium">
-                      No luxury assets match your current configuration.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {filteredProducts.map((product) => (
-                      <div
-                        key={product.id}
-                        className="bg-white rounded-2xl border border-purple-50/70 p-4 shadow-premium hover:shadow-cardHover transition-all duration-300 flex flex-col justify-between group"
-                      >
-                        <div>
-                          {/* Image Sandbox Wrapper */}
-                          <div className="relative rounded-xl overflow-hidden bg-[#F3F0FA]/40 aspect-square flex items-center justify-center mb-4">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {filteredProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="bg-white rounded-2xl border border-purple-50 p-4 shadow-premium flex flex-col justify-between group"
+                    >
+                      <div>
+                        <div className="relative rounded-xl overflow-hidden bg-[#F3F0FA]/40 aspect-square flex items-center justify-center mb-4">
+                          <img
+                            src={product.image}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            onClick={() => toggleWishlist(product.id)}
+                            className="absolute top-2.5 right-2.5 p-2 rounded-xl bg-white/90 backdrop-blur-sm"
+                          >
+                            <Heart
+                              className={`w-4 h-4 ${
+                                wishlist.includes(product.id)
+                                  ? "fill-red-500 text-red-500"
+                                  : "text-slate-400"
+                              }`}
                             />
-
-                            {/* Wishlist Toggle Action Node */}
-                            <button
-                              onClick={() => toggleWishlist(product.id)}
-                              className="absolute top-2.5 right-2.5 p-2 rounded-xl bg-white/90 backdrop-blur-sm shadow-md hover:bg-white transition-colors"
-                            >
-                              <Heart
-                                className={`w-4 h-4 transition-colors ${
-                                  wishlist.includes(product.id)
-                                    ? "fill-red-500 text-red-500"
-                                    : "text-slate-400"
-                                }`}
-                              />
-                            </button>
-
-                            {/* Luxury Quick View Action Hook */}
-                            <button
-                              onClick={() => setQuickViewProduct(product)}
-                              className="absolute bottom-2 inset-x-2 bg-white/95 backdrop-blur-sm py-2 rounded-xl text-[11px] font-bold shadow-sm opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 text-center text-purple-700"
-                            >
-                              Asset Quick View
-                            </button>
-                          </div>
-
-                          {/* Brand Metadata */}
-                          <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">
-                            {product.brand}
-                          </span>
-                          <h4 className="text-sm font-bold text-slate-800 mt-0.5 line-clamp-1">
-                            {product.name}
-                          </h4>
-
-                          {/* Star Ratings Component Layout */}
-                          <div className="flex items-center gap-1 mt-1.5 mb-3">
-                            <div className="flex items-center text-amber-400">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-3.5 h-3.5 ${
-                                    i < Math.floor(product.rating)
-                                      ? "fill-amber-400"
-                                      : "text-slate-200"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-[11px] text-slate-400 font-bold">
-                              ({product.rating})
-                            </span>
-                          </div>
+                          </button>
                         </div>
-
-                        {/* Card Purchase Action Footer */}
-                        <div className="flex items-center justify-between border-t border-purple-50/50 pt-3 mt-2">
-                          <span className="text-base font-black text-slate-900">
-                            ₹{product.price.toLocaleString("en-IN")}
+                        <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">
+                          {product.brand}
+                        </span>
+                        <h4 className="text-sm font-bold text-slate-800 mt-0.5 line-clamp-1">
+                          {product.name}
+                        </h4>
+                        <div className="flex items-center gap-1 mt-1.5 mb-3">
+                          <span className="text-[11px] text-slate-400 font-bold">
+                            ★ {product.rating}
                           </span>
-
-                          {cart.find((item) => item.id === product.id) ? (
-                            <div className="flex items-center bg-purple-50 rounded-xl border border-purple-100 overflow-hidden">
-                              <button
-                                onClick={() => updateQuantity(product.id, -1)}
-                                className="p-2 hover:bg-purple-100 text-purple-700 transition-colors"
-                              >
-                                <Minus className="w-3.5 h-3.5" />
-                              </button>
-                              <span className="px-2.5 text-xs font-black text-purple-900">
-                                {
-                                  cart.find((item) => item.id === product.id)
-                                    .quantity
-                                }
-                              </span>
-                              <button
-                                onClick={() => updateQuantity(product.id, 1)}
-                                className="p-2 hover:bg-purple-100 text-purple-700 transition-colors"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => addToCart(product)}
-                              className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-all shadow-md shadow-purple-100"
-                            >
-                              Add To Cart
-                            </button>
-                          )}
                         </div>
                       </div>
-                    ))}
+                      <div className="flex items-center justify-between border-t border-purple-50 pt-3">
+                        <span className="text-base font-black text-slate-900">
+                          ₹{product.price}
+                        </span>
+                        <button
+                          onClick={() => addToCart(product)}
+                          className="px-3.5 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold"
+                        >
+                          Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* --- RELOCATED: ABOUT US MODULE (BOTTOM OF HOME) --- */}
+            <div className="bg-white rounded-2xl border border-purple-50 p-6 md:p-8 shadow-premium space-y-6 mb-8">
+              <div className="text-center space-y-1">
+                <div className="inline-flex p-2.5 rounded-xl bg-purple-50 text-purple-600 mb-1">
+                  <Info className="w-5 h-5" />
+                </div>
+                <h2 className="text-xl font-black text-slate-900 tracking-tight">
+                  Redefining Digital Commerce
+                </h2>
+                <p className="text-xs text-slate-400 max-w-xl mx-auto">
+                  ShopEase combines a minimal, luxury interface with premium
+                  lifestyle essentials to elevate your standard shopping
+                  ecosystem.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div className="p-4 rounded-xl bg-[#F3F0FA]/30 space-y-1">
+                  <ShieldCheck className="w-5 h-5 text-purple-600" />
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                    Elite Authenticity
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Every premium shoe and gym apparatus is sourced strictly
+                    through authorized global brand distribution lines.
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#F3F0FA]/30 space-y-1">
+                  <Truck className="w-5 h-5 text-purple-600" />
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                    Express Logistics
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Optimized automated priority lines ensuring hyper-fast
+                    processing across our regional fulfillment hubs.
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#F3F0FA]/30 space-y-1">
+                  <RefreshCw className="w-5 h-5 text-purple-600" />
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                    Fluid Exchange
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    A frictionless protection layout guaranteeing complete
+                    post-purchase safety metrics across all accounts.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* --- RELOCATED: CONTACT US MODULE (BOTTOM OF HOME) --- */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              <div className="md:col-span-2 bg-gradient-to-br from-purple-700 to-indigo-900 rounded-2xl p-6 text-white flex flex-col justify-between">
+                <div className="space-y-2">
+                  <h3 className="text-base font-black tracking-tight">
+                    Connect Channels
+                  </h3>
+                  <p className="text-[11px] text-purple-100">
+                    Have inquiries regarding bulk gym apparatus configurations
+                    or wholesale supplements allocation models?
+                  </p>
+                </div>
+                <div className="space-y-3 my-4 text-[11px] font-semibold text-purple-100">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    <span>support@shopease.io</span>
                   </div>
-                )}
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    <span>+91 98230 45120</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>HQ Fulfillment Hub, Virar East, Mumbai, MH</span>
+                  </div>
+                </div>
+                <span className="text-[9px] text-purple-300 font-bold uppercase tracking-widest">
+                  Support Core: 24/7/365
+                </span>
               </div>
-            </div>
-          </>
-        )}
 
-        {/* --- PREMIUM ABOUT US COMPONENT --- */}
-        {activeTab === "about" && (
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-purple-50 p-6 md:p-10 shadow-premium space-y-8 animate-fade-in">
-            <div className="text-center space-y-2">
-              <div className="inline-flex p-3 rounded-2xl bg-purple-50 text-purple-600 mb-2">
-                <Info className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                Redefining Digital Commerce
-              </h2>
-              <p className="text-sm font-medium text-slate-400 max-w-xl mx-auto">
-                ShopEase combines a minimal, luxury interface with premium
-                lifestyle essentials to elevate your standard shopping
-                ecosystem.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-              <div className="p-5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20 space-y-2">
-                <ShieldCheck className="w-5 h-5 text-purple-600" />
-                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                  Elite Authenticity
-                </h4>
-                <p className="text-[11px] text-slate-400 font-medium">
-                  Every premium shoe, supplement container, and gym apparatus is
-                  sourced strictly through authorized global brand distribution.
-                </p>
-              </div>
-              <div className="p-5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20 space-y-2">
-                <Truck className="w-5 h-5 text-purple-600" />
-                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                  Express Logistics
-                </h4>
-                <p className="text-[11px] text-slate-400 font-medium">
-                  Optimized automated priority logistics lines ensuring
-                  hyper-fast processing across our regional hubs.
-                </p>
-              </div>
-              <div className="p-5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20 space-y-2">
-                <RefreshCw className="w-5 h-5 text-purple-600" />
-                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                  Fluid Exchange
-                </h4>
-                <p className="text-[11px] text-slate-400 font-medium">
-                  A frictionless, no-questions-asked protection layout
-                  guaranteeing complete post-purchase safety metrics.
-                </p>
-              </div>
-            </div>
-
-            <div className="border-t border-purple-50 pt-6 text-center text-xs font-bold text-purple-600">
-              Inspired by Luxury Aesthetics. Fabricated for Ultimate Utility.
-            </div>
-          </div>
-        )}
-
-        {/* --- INTERACTIVE CONTACT US COMPONENT --- */}
-        {activeTab === "contact" && (
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 animate-fade-in">
-            <div className="md:col-span-2 bg-gradient-to-br from-purple-700 to-indigo-900 rounded-2xl p-6 text-white flex flex-col justify-between shadow-premium">
-              <div className="space-y-4">
-                <h3 className="text-lg font-black tracking-tight">
-                  Connect Channels
+              <div className="md:col-span-3 bg-white border border-purple-50 rounded-2xl p-6 shadow-premium">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                  Transmit Inquiries
                 </h3>
-                <p className="text-xs text-purple-100 font-medium">
-                  Have inquiries regarding specialized bulk gym apparatus
-                  configurations or wholesale supplements allocation models?
-                </p>
-              </div>
-
-              <div className="space-y-4 my-6">
-                <div className="flex items-center gap-3 text-xs font-semibold">
-                  <Mail className="w-4.5 h-4.5 text-purple-300" />
-                  <span>support@shopease.io</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs font-semibold">
-                  <Phone className="w-4.5 h-4.5 text-purple-300" />
-                  <span>+91 98230 45120</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs font-semibold">
-                  <MapPin className="w-4.5 h-4.5 text-purple-300" />
-                  <span>HQ Fulfillment Hub, Virar East, Mumbai, MH</span>
-                </div>
-              </div>
-
-              <span className="text-[10px] text-purple-300 font-bold uppercase tracking-widest">
-                Support Core: 24/7/365
-              </span>
-            </div>
-
-            <div className="md:col-span-3 bg-white border border-purple-50 rounded-2xl p-6 shadow-premium">
-              <h3 className="text-base font-bold text-slate-900 mb-4">
-                Transmit Inquiries
-              </h3>
-              <form onSubmit={handleContactSubmit} className="space-y-4">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-400 block mb-1">
-                    Full Legal Identifier
-                  </label>
+                <form onSubmit={handleContactSubmit} className="space-y-3">
                   <input
                     type="text"
                     required
@@ -762,31 +596,21 @@ export default function App() {
                     onChange={(e) =>
                       setContactForm({ ...contactForm, name: e.target.value })
                     }
-                    className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
-                    placeholder="e.g. Daksh"
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none border border-transparent focus:border-purple-200"
+                    placeholder="Your Name"
                   />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-400 block mb-1">
-                    Electronic Mail Point
-                  </label>
                   <input
-                    type="type"
+                    type="email"
                     required
                     value={contactForm.email}
                     onChange={(e) =>
                       setContactForm({ ...contactForm, email: e.target.value })
                     }
-                    className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
-                    placeholder="customer@domain.com"
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none border border-transparent focus:border-purple-200"
+                    placeholder="Email Address"
                   />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-400 block mb-1">
-                    Elaborate Communication Stream
-                  </label>
                   <textarea
-                    rows="3"
+                    rows="2"
                     required
                     value={contactForm.message}
                     onChange={(e) =>
@@ -795,24 +619,24 @@ export default function App() {
                         message: e.target.value,
                       })
                     }
-                    className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none resize-none"
-                    placeholder="State structural issues, sizing inquiries, or tracking anomalies..."
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none border border-transparent focus:border-purple-200 resize-none"
+                    placeholder="State structural issues or sizing inquiries..."
                   />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md shadow-purple-50"
-                >
-                  Dispatch Ticket Pipeline
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    className="w-full bg-purple-600 text-white font-bold text-xs py-2.5 rounded-xl"
+                  >
+                    Dispatch Ticket Pipeline
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
+          </>
         )}
 
-        {/* --- CHECKOUT WORKFLOW VIEW --- */}
+        {/* --- CHECKOUT VIEW --- */}
         {activeTab === "checkout" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fade-in">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white p-6 rounded-2xl border border-purple-50 shadow-premium">
                 <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
@@ -820,154 +644,85 @@ export default function App() {
                   Address
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[11px] font-bold text-slate-400 block mb-1">
-                      Customer Identifier Name
-                    </label>
-                    <input
-                      type="text"
-                      value={address.name}
-                      onChange={(e) =>
-                        setAddress({ ...address, name: e.target.value })
-                      }
-                      className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-bold text-slate-400 block mb-1">
-                      Street / Landmark Destination
-                    </label>
-                    <input
-                      type="text"
-                      value={address.street}
-                      onChange={(e) =>
-                        setAddress({ ...address, street: e.target.value })
-                      }
-                      className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-bold text-slate-400 block mb-1">
-                      Metropolitan City Location
-                    </label>
-                    <input
-                      type="text"
-                      value={address.city}
-                      onChange={(e) =>
-                        setAddress({ ...address, city: e.target.value })
-                      }
-                      className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-bold text-slate-400 block mb-1">
-                      Postal Code (PIN)
-                    </label>
-                    <input
-                      type="text"
-                      value={address.pin}
-                      onChange={(e) =>
-                        setAddress({ ...address, pin: e.target.value })
-                      }
-                      className="w-full text-xs font-medium bg-[#F3F0FA]/50 p-3 rounded-xl border border-purple-50 focus:border-purple-300 outline-none"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    value={address.name}
+                    onChange={(e) =>
+                      setAddress({ ...address, name: e.target.value })
+                    }
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none"
+                    placeholder="Name"
+                  />
+                  <input
+                    type="text"
+                    value={address.street}
+                    onChange={(e) =>
+                      setAddress({ ...address, street: e.target.value })
+                    }
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none"
+                    placeholder="Street Address"
+                  />
+                  <input
+                    type="text"
+                    value={address.city}
+                    onChange={(e) =>
+                      setAddress({ ...address, city: e.target.value })
+                    }
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none"
+                    placeholder="City"
+                  />
+                  <input
+                    type="text"
+                    value={address.pin}
+                    onChange={(e) =>
+                      setAddress({ ...address, pin: e.target.value })
+                    }
+                    className="w-full text-xs bg-[#F3F0FA]/50 p-3 rounded-xl outline-none"
+                    placeholder="PIN Code"
+                  />
                 </div>
               </div>
-
               <div className="bg-white p-6 rounded-2xl border border-purple-50 shadow-premium">
                 <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-purple-600" /> Secured
-                  Settlement Engine
+                  Settlement
                 </h2>
-                <div className="space-y-2.5">
-                  {[
-                    {
-                      id: "upi",
-                      label:
-                        "Instant Unified Payments Interface (UPI / GPay / PhonePe)",
-                      sub: "Pay securely using any mobile authentication VPA",
-                    },
-                    {
-                      id: "card",
-                      label: "Credit or Debit Card Processing",
-                      sub: "Visa, MasterCard, RuPay transactions supported",
-                    },
-                    {
-                      id: "cod",
-                      label: "Cash On Delivery (COD)",
-                      sub: "Additional verification handling at physical drop",
-                    },
-                  ].map((method) => (
+                <div className="space-y-2">
+                  {["upi", "card", "cod"].map((id) => (
                     <label
-                      key={method.id}
-                      className={`flex gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                        paymentMethod === method.id
-                          ? "border-purple-600 bg-purple-50/40 shadow-sm"
-                          : "border-slate-100 hover:border-purple-200"
+                      key={id}
+                      className={`flex gap-3 p-3 rounded-xl border cursor-pointer ${
+                        paymentMethod === id
+                          ? "border-purple-600 bg-purple-50/40"
+                          : "border-slate-100"
                       }`}
                     >
                       <input
                         type="radio"
-                        name="payment"
-                        value={method.id}
-                        checked={paymentMethod === method.id}
-                        onChange={() => setPaymentMethod(method.id)}
-                        className="mt-0.5 accent-purple-600"
+                        checked={paymentMethod === id}
+                        onChange={() => setPaymentMethod(id)}
+                        className="accent-purple-600"
                       />
-                      <div>
-                        <span className="text-xs font-bold text-slate-900 block">
-                          {method.label}
-                        </span>
-                        <span className="text-[11px] font-medium text-slate-400">
-                          {method.sub}
-                        </span>
-                      </div>
+                      <span className="text-xs font-bold text-slate-900 capitalize">
+                        {id === "upi"
+                          ? "UPI / GPay"
+                          : id === "card"
+                          ? "Credit/Debit Card"
+                          : "Cash on Delivery"}
+                      </span>
                     </label>
                   ))}
                 </div>
               </div>
             </div>
-
             <div className="bg-white p-6 rounded-2xl border border-purple-50 shadow-premium h-fit">
-              <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
+              <h3 className="text-sm font-bold text-slate-900 pb-3 mb-4 border-b">
                 Verification Summary
               </h3>
-              {cart.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between items-center text-xs mb-3 font-medium"
-                >
-                  <span className="text-slate-600 truncate max-w-[160px]">
-                    {item.name}{" "}
-                    <span className="text-slate-400 font-bold">
-                      x{item.quantity}
-                    </span>
-                  </span>
-                  <span className="text-slate-900 font-bold">
-                    ₹{(item.price * item.quantity).toLocaleString("en-IN")}
-                  </span>
-                </div>
-              ))}
-
-              <div className="border-t border-dashed border-slate-100 pt-3 mt-4 space-y-2.5">
-                <div className="flex justify-between text-xs text-slate-500 font-medium">
-                  <span>Subtotal Matrix</span>
-                  <span>₹{cartSubtotal.toLocaleString("en-IN")}</span>
-                </div>
-                {appliedDiscount > 0 && (
-                  <div className="flex justify-between text-xs text-emerald-600 font-bold">
-                    <span>Coupon Save Drop</span>
-                    <span>-₹{discountAmount.toLocaleString("en-IN")}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-xs text-slate-500 font-medium">
-                  <span>Logistics/Shipping</span>
-                  <span className="text-emerald-600 font-bold">FREE</span>
-                </div>
-                <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-100">
-                  <span>Final Invoice Total</span>
-                  <span className="text-purple-700 text-base">
+              <div className="border-t pt-3 space-y-2 text-xs">
+                <div className="flex justify-between font-black text-slate-900">
+                  <span>Final Total</span>
+                  <span className="text-purple-700">
                     ₹{cartTotal.toLocaleString("en-IN")}
                   </span>
                 </div>
@@ -975,11 +730,10 @@ export default function App() {
               <button
                 onClick={() => {
                   setCart([]);
-                  setAppliedDiscount(0);
                   setActiveTab("tracking");
                   triggerToast("Order compiled successfully!");
                 }}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-3 rounded-xl shadow-md mt-6 transition-all"
+                className="w-full bg-purple-600 text-white font-bold text-xs py-3 rounded-xl mt-6"
               >
                 Authorize & Dispatch Order
               </button>
@@ -989,248 +743,101 @@ export default function App() {
 
         {/* --- CUSTOMER PROFILE MODULE --- */}
         {activeTab === "profile" && (
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-purple-50 p-6 shadow-premium animate-fade-in">
-            <div className="flex items-center gap-4 border-b border-slate-100 pb-6 mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-md">
+          <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-purple-50 p-6 shadow-premium">
+            <div className="flex items-center gap-4 border-b pb-6 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-white text-lg font-black">
                 D
               </div>
               <div>
-                <h2 className="text-lg font-bold text-slate-900">Daksh</h2>
-                <p className="text-xs font-semibold text-purple-600">
+                <h2 className="text-base font-bold text-slate-900">Daksh</h2>
+                <p className="text-xs text-purple-600 font-semibold">
                   Premium Account Tier Member
                 </p>
               </div>
             </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Saved Wishlist Index ({wishlist.length} Items)
-              </h3>
-              {wishlist.length === 0 ? (
-                <p className="text-xs text-slate-400 py-2">
-                  No product tokens configured in your core favorites database.
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {ALL_PRODUCTS.filter((p) => wishlist.includes(p.id)).map(
-                    (p) => (
-                      <div
-                        key={p.id}
-                        className="flex items-center gap-3 p-2.5 rounded-xl border border-purple-50 bg-[#F3F0FA]/20"
-                      >
-                        <img
-                          src={p.image}
-                          alt=""
-                          className="w-10 h-10 object-cover rounded-lg"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold text-slate-800 truncate">
-                            {p.name}
-                          </p>
-                          <p className="text-[11px] font-black text-purple-700">
-                            ₹{p.price}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => addToCart(p)}
-                          className="p-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )
-                  )}
-                </div>
-              )}
-            </div>
+            <p className="text-xs text-slate-400">
+              Welcome back to your central interface workspace dashboard profile
+              management portal.
+            </p>
           </div>
         )}
 
-        {/* --- FAKE ORDER TRACKING DASHBOARD --- */}
+        {/* --- ORDER TRACKING DASHBOARD --- */}
         {activeTab === "tracking" && (
-          <div className="max-w-xl mx-auto bg-white rounded-2xl border border-purple-50 p-6 shadow-premium animate-fade-in">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-              <div>
-                <span className="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md">
-                  LIVE DISPATCH
-                </span>
-                <h2 className="text-base font-bold text-slate-900 mt-1">
-                  Invoice Tracker #SE-9482-2026
-                </h2>
-              </div>
-              <span className="text-xs font-bold text-slate-500">
-                ETA: 2 Days
-              </span>
-            </div>
+          <div className="max-w-xl mx-auto bg-white rounded-2xl border border-purple-50 p-6 shadow-premium">
+            <h2 className="text-base font-bold text-slate-900 border-b pb-4 mb-6">
+              Invoice Tracker #SE-9482-2026
+            </h2>
             <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-1.5 before:bottom-1.5 before:w-0.5 before:bg-purple-100">
-              {[
-                {
-                  title: "Consignment Dispatched from Virar Fulfillment Hub",
-                  done: true,
-                  desc: "Package picked up and checked for structural fidelity.",
-                },
-                {
-                  title: "Passed Sorting Matrix Inspection Gate",
-                  done: true,
-                  desc: "Routing telemetry synced for delivery tracking.",
-                },
-                {
-                  title: "Out for Transit via Local Hub Logistics",
-                  done: false,
-                  desc: "Assigned route handler scheduling vehicle drops.",
-                },
-                {
-                  title: "Delivered to Customer Drop Point",
-                  done: false,
-                  desc: "Requires pin authentication signature code.",
-                },
-              ].map((step, i) => (
-                <div key={i} className="relative group">
-                  <div
-                    className={`absolute -left-[22px] top-1 w-3 h-3 rounded-full border-2 bg-white transition-colors ${
-                      step.done
-                        ? "border-purple-600 bg-purple-600"
-                        : "border-slate-300"
-                    }`}
-                  />
-                  <div>
-                    <h4
-                      className={`text-xs font-bold ${
-                        step.done ? "text-slate-900" : "text-slate-400"
-                      }`}
-                    >
-                      {step.title}
-                    </h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
-                      {step.desc}
-                    </p>
-                  </div>
+              <div className="relative">
+                <div className="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-purple-600" />
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">
+                    Consignment Dispatched from Virar Hub
+                  </h4>
+                  <p className="text-[10px] text-slate-400">
+                    Package processed successfully.
+                  </p>
                 </div>
-              ))}
+              </div>
+              <div className="relative">
+                <div className="absolute -left-[22px] top-1 w-3 h-3 rounded-full border-2 border-slate-300 bg-white" />
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400">
+                    Out for Delivery Logistics Transit
+                  </h4>
+                  <p className="text-[10px] text-slate-400">
+                    Route planning sync active.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
       </main>
 
-      {/* --- CART DRAWER OVERLAY SIDEBAR PANEL --- */}
+      {/* --- CART DRAWER OVERLAY --- */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden bg-slate-900/40 backdrop-blur-xs flex justify-end">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between animate-slide-left">
-            <div className="p-4 border-b border-purple-50 flex items-center justify-between bg-gradient-to-r from-white to-[#F3F0FA]/30">
-              <span className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                <ShoppingBag className="w-4.5 h-4.5 text-purple-600" /> Active
-                Cart Storage
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex justify-end">
+          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between">
+            <div className="p-4 border-b flex items-center justify-between">
+              <span className="font-bold text-sm text-slate-900">
+                Active Cart Storage
               </span>
               <button
                 onClick={() => setIsCartOpen(false)}
-                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400"
+                className="text-slate-400"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {cart.length === 0 ? (
-                <div className="text-center py-16 space-y-2">
-                  <ShoppingBag className="w-12 h-12 text-slate-200 mx-auto" />
-                  <p className="text-xs font-medium text-slate-400">
-                    Your shopping allocation matrix is completely empty.
-                  </p>
-                </div>
-              ) : (
-                cart.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex gap-4 bg-white p-3 rounded-xl border border-purple-50 shadow-sm hover:border-purple-200 transition-colors"
-                  >
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="w-16 h-16 object-cover rounded-lg bg-slate-50"
-                    />
-                    <div className="flex-1 min-w-0 flex flex-col justify-between">
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-800 truncate">
-                          {item.name}
-                        </h4>
-                        <span className="text-xs font-black text-slate-900 block mt-0.5">
-                          ₹{item.price.toLocaleString("en-IN")}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center bg-slate-50 rounded-lg overflow-hidden border border-slate-100">
-                          <button
-                            onClick={() => updateQuantity(item.id, -1)}
-                            className="p-1 hover:bg-purple-100 text-slate-500 transition-colors"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="px-2 text-[11px] font-black text-slate-800">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.id, 1)}
-                            className="p-1 hover:bg-purple-100 text-slate-500 transition-colors"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
-                        <button
-                          onClick={() => deleteFromCart(item.id, item.name)}
-                          className="text-slate-300 hover:text-red-500 transition-colors p-1"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {cart.length > 0 && (
-              <div className="p-4 border-t border-purple-50 bg-[#F3F0FA]/30 space-y-4">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Promo code (e.g. SAVE10)"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    className="flex-1 text-xs bg-white border border-purple-100 rounded-xl px-3 outline-none focus:border-purple-400"
-                  />
-                  <button
-                    onClick={applyCoupon}
-                    className="bg-slate-900 text-white font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-slate-800 transition-colors"
-                  >
-                    Apply
-                  </button>
-                </div>
-                <div className="space-y-1.5 border-b border-purple-50 pb-3 text-xs font-medium text-slate-500">
-                  <div className="flex justify-between">
-                    <span>Subtotal Matrix</span>
-                    <span>₹{cartSubtotal.toLocaleString("en-IN")}</span>
-                  </div>
-                  {appliedDiscount > 0 && (
-                    <div className="flex justify-between text-emerald-600 font-bold">
-                      <span>Discount (10%)</span>
-                      <span>-₹{discountAmount.toLocaleString("en-IN")}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-slate-900 font-black text-sm pt-1.5">
-                    <span>Final Total</span>
-                    <span className="text-purple-700">
-                      ₹{cartTotal.toLocaleString("en-IN")}
+              {cart.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex gap-4 bg-white p-3 rounded-xl border border-purple-50"
+                >
+                  <div className="flex-1">
+                    <h4 className="text-xs font-bold text-slate-800">
+                      {item.name}
+                    </h4>
+                    <span className="text-xs font-black text-slate-900">
+                      ₹{item.price}
                     </span>
                   </div>
                 </div>
+              ))}
+            </div>
+            {cart.length > 0 && (
+              <div className="p-4 bg-slate-50 border-t">
                 <button
                   onClick={() => {
                     setIsCartOpen(false);
                     setActiveTab("checkout");
                   }}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+                  className="w-full bg-purple-600 text-white font-bold text-xs py-3 rounded-xl"
                 >
-                  Proceed To Checkout <ChevronRight className="w-4 h-4" />
+                  Proceed To Checkout
                 </button>
               </div>
             )}
@@ -1238,95 +845,44 @@ export default function App() {
         </div>
       )}
 
-      {/* --- QUICK VIEW POPUP BLOCK MODAL --- */}
-      {quickViewProduct && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-5 relative border border-purple-50 shadow-2xl animate-fade-in">
-            <button
-              onClick={() => setQuickViewProduct(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-xl hover:bg-slate-100 text-slate-400"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <img
-              src={quickViewProduct.image}
-              alt=""
-              className="w-full h-48 object-cover rounded-xl bg-slate-50 mb-4"
-            />
-            <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">
-              {quickViewProduct.brand}
-            </span>
-            <h3 className="text-base font-black text-slate-900">
-              {quickViewProduct.name}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1 font-medium">
-              Premium performance engineered asset. Constructed with lightweight
-              mesh architectures and resilient compound layers optimized for
-              longevity and durability.
-            </p>
-            <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-4">
-              <span className="text-xl font-black text-slate-900">
-                ₹{quickViewProduct.price}
-              </span>
-              <button
-                onClick={() => {
-                  addToCart(quickViewProduct);
-                  setQuickViewProduct(null);
-                }}
-                className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-colors"
-              >
-                Add Asset To Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- BRAND NEW: MOBILE APPLICATION DOWNLOAD POPUP MODAL --- */}
+      {/* --- MOBILE APPLICATION DOWNLOAD MODAL --- */}
       {appModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm p-6 relative border border-purple-100 shadow-2xl text-center space-y-4">
-            {/* Close Cross Node */}
             <button
               onClick={() => setAppModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-xl hover:bg-slate-100 text-slate-400"
+              className="absolute top-4 right-4 text-slate-400"
             >
               <X className="w-5 h-5" />
             </button>
-
-            {/* Premium Icon Header Layout */}
-            <div className="w-14 h-14 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center rounded-2xl mx-auto shadow-lg shadow-purple-100 animate-bounce">
+            <div className="w-14 h-14 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center rounded-2xl mx-auto shadow-lg">
               <Smartphone className="w-7 h-7" />
             </div>
-
-            <div className="space-y-1">
+            <div>
               <h3 className="text-base font-black text-slate-900 tracking-tight">
                 Get ShopEase Mobile App
               </h3>
-              <p className="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md inline-block">
+              <p className="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md inline-block mt-1">
                 Android Edition (.APK)
               </p>
             </div>
-
-            <p className="text-xs text-slate-400 font-medium px-2">
+            <p className="text-xs text-slate-400 font-medium">
               Unlock fluid navigation pathways, lightning fast order tracking
               metrics, and immediate app-only checkout updates.
             </p>
 
-            {/* --- CORE DOWNLOAD LINK ACTION EDGE --- */}
+            {/* LINK REPLACEMENT ZONE */}
             <a
               href="/base.apk"
               download="ShopEase.apk"
               onClick={() => {
                 setAppModalOpen(false);
-                triggerToast("Initializing .APK asset download pipeline...");
+                triggerToast("Initializing download...");
               }}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs py-3 rounded-xl shadow-md flex items-center justify-center gap-2 transition-all group"
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs py-3 rounded-xl shadow-md flex items-center justify-center gap-2"
             >
-              <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-              Download Android Package
+              <Download className="w-4 h-4" /> Download Android Package
             </a>
-
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Vercel Distributed Assets Core
             </p>
@@ -1334,41 +890,28 @@ export default function App() {
         </div>
       )}
 
-      {/* --- FLOATING AI CONCIERGE CHAT MODULE --- */}
+      {/* --- FLOATING CHAT MODULE --- */}
       <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end">
         {chatOpen && (
-          <div className="w-72 bg-white rounded-2xl border border-purple-100 shadow-2xl overflow-hidden mb-3 animate-slide-up">
+          <div className="w-72 bg-white rounded-2xl border border-purple-100 shadow-2xl overflow-hidden mb-3">
             <div className="bg-purple-600 text-white p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span className="text-xs font-bold">ShopEase Assistant AI</span>
-              </div>
-              <button
-                onClick={() => setChatOpen(false)}
-                className="text-white/80 hover:text-white"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <span className="text-xs font-bold">ShopEase Assistant AI</span>
             </div>
-            <div className="p-3 h-48 overflow-y-auto bg-slate-50 text-[11px] font-medium space-y-2">
-              <div className="bg-purple-50 text-purple-900 p-2.5 rounded-xl rounded-tl-none max-w-[85%]">
-                Hello Daksh! Ready to deploy your code? You can use code
-                `SAVE10` to get 10% off on premium assets! Let me know if you
-                need any shipping help.
-              </div>
+            <div className="p-3 h-32 bg-slate-50 text-[11px]">
+              Hello Daksh! Use coupon code `SAVE10` to get 10% off items!
             </div>
           </div>
         )}
         <button
           onClick={() => setChatOpen(!chatOpen)}
-          className="bg-purple-600 hover:bg-purple-700 text-white p-3.5 rounded-full shadow-xl transition-all hover:scale-105"
+          className="bg-purple-600 text-white p-3.5 rounded-full shadow-xl"
         >
           <MessageSquare className="w-5 h-5" />
         </button>
       </div>
 
-      {/* --- MOBILE SMARTPHONE BOTTOM NAV BAR TRACK --- */}
-      <div className="fixed bottom-0 inset-x-0 bg-white border-t border-purple-100 shadow-lg px-6 py-2 flex justify-between items-center sm:hidden z-40">
+      {/* --- BOTTOM MOBILE TRACK --- */}
+      <div className="fixed bottom-0 inset-x-0 bg-white border-t border-purple-100 px-6 py-2 flex justify-between items-center sm:hidden z-40">
         {[
           { id: "home", icon: ShoppingBag, label: "Shop" },
           { id: "tracking", icon: ArrowLeftRight, label: "Track" },
@@ -1377,7 +920,7 @@ export default function App() {
           <button
             key={btn.id}
             onClick={() => setActiveTab(btn.id)}
-            className={`flex flex-col items-center gap-0.5 p-1 transition-colors ${
+            className={`flex flex-col items-center gap-0.5 p-1 ${
               activeTab === btn.id ? "text-purple-600" : "text-slate-400"
             }`}
           >
