@@ -948,7 +948,7 @@ export default function App() {
             </p>
 
             <a
-              href="/base.apk"
+              href="/app-debug.apk"
               download="ShopEase.apk"
               onClick={() => {
                 setAppModalOpen(false);
